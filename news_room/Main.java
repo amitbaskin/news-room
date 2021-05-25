@@ -20,25 +20,24 @@ public abstract class Main {
     private static void run() {
         try{
             ExecutorService executorService = Executors.newCachedThreadPool();
-            runServer(executorService);
+            runServer();
             for (int i = 0; i< CLIENTS_AMOUNT; i++){
-                runNewClient(executorService);
+                runNewClient();
             }
         } catch (SocketException | UnknownHostException exception) {
             exception.printStackTrace();
         }
     }
 
-    private static void runServer(ExecutorService executorService) throws UnknownHostException,
+    private static void runServer() throws UnknownHostException,
             SocketException {
-        Server server = new Server(InetAddress.getLocalHost(), PORT_NUM, executorService);
+        Server server = new Server(InetAddress.getLocalHost(), PORT_NUM);
         server.initialize();
-        executorService.execute(server);
     }
 
-    private static void runNewClient(ExecutorService executorService) throws SocketException,
+    private static void runNewClient() throws SocketException,
             UnknownHostException {
-        Client client = new Client(PORT_NUM, executorService);
+        Client client = new Client(PORT_NUM);
         client.initialize();
     }
 }

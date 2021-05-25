@@ -21,9 +21,9 @@ public class ServerActivateBtnListener implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (getServer().getIsEnrollmentOff()){
             getServer().setEnrollmentOff(false);
-            JOptionPane.showMessageDialog(getServer(), Server.ENROLLMENT_ON_MSG, Server.ENROLLMENT_TITLE,
-                    JOptionPane.INFORMATION_MESSAGE);
-            getServer().getExecutorService().execute(getServer());
+            JOptionPane.showMessageDialog(getServer(), Server.getEnrollmentOnMsg(),
+                     Server.getEnrollmentTitle(), JOptionPane.INFORMATION_MESSAGE);
+            server.run();
         } else{
             JOptionPane.showMessageDialog(server, ACTIVE_MSG, ERR_TITLE, JOptionPane.ERROR_MESSAGE);
         }

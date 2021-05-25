@@ -2,14 +2,14 @@ package news_room.server;
 
 import javax.swing.*;
 
-public class ServerEnrollBackground extends SwingWorker<Object, Object> {
+public class EnrollWorker extends SwingWorker<Object, Object> {
     private final Server server;
 
     public Server getServer() {
         return server;
     }
 
-    public ServerEnrollBackground(Server server){
+    public EnrollWorker(Server server){
         this.server = server;
     }
 

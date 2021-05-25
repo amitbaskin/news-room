@@ -19,8 +19,8 @@ public class ServerWindowListener extends WindowAdapter {
     public void windowClosing(WindowEvent e) {
         try {
             getServer().setEnrollmentOff(false);
-            getServer().setIsOpen(false);
-            getServer().sendToAll(Server.DISCONNECT);
+            getServer().setClosed();
+            getServer().sendToAll(Server.getDisconnectMsg());
             getServer().sendStop();
         } catch (IOException exception){
             exception.printStackTrace();

@@ -4,27 +4,29 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
 import java.net.*;
-import java.util.concurrent.ExecutorService;
 
-public class Server extends JFrame implements Runnable{
-    public static final String FRAME_TITLE = "Server";
-    public static final int DEFAULT_MSG_SIZE = 100;
-    public static final String SEND_TITLE = "Send";
-    public static final String STOP_TITLE = "Stop\nEnrollments";
-    public static final String CONTINUE_TITLE = "Activate\nEnrollments";
-    public static final String ENROLLMENT_OFF_MSG = "Clients' enrollment is off";
-    public static final String ENROLLMENT_ON_MSG = "Clients' enrollment is on";
-    public static final String ENROLLMENT_TITLE = "Clients' Enrollment";
-    public static final String NOT_ACCEPTING_MSG = "Not accepting new subscribers right now";
-    public static final String ALREADY_SUB_MSG = "You are subscribed already";
-    public static final String HI_MSG = "Hi";
-    public static final String BYE_MSG = "Bye";
-    public static final String CONNECT = "CONNECT";
-    public static final String DISCONNECT = "DISCONNECT";
-    public static final String STOP = "STOP";
-    public static final String DEFAULT_TEXT = "";
-    public static final int ROWS = 500;
-    public static final int COLS = 400;
+/**
+ * A server distributing news
+ */
+public class Server extends JFrame {
+    private static final int DEFAULT_MSG_SIZE = 100;
+    private static final String CONNECT = "CONNECT";
+    private static final String DISCONNECT = "DISCONNECT";
+    private static final String STOP = "STOP";
+    private static final String ENROLLMENT_ON_MSG = "Clients' enrollment is on";
+    private static final String ENROLLMENT_TITLE = "Clients' Enrollment";
+    private static final String FRAME_TITLE = "Server";
+    private static final String SEND_TITLE = "Send";
+    private static final String STOP_TITLE = "Stop\nEnrollments";
+    private static final String CONTINUE_TITLE = "Activate\nEnrollments";
+    private static final String ENROLLMENT_OFF_MSG = "Clients' enrollment is off";
+    private static final String NOT_ACCEPTING_MSG = "Not accepting new subscribers right now";
+    private static final String ALREADY_SUB_MSG = "You are subscribed already";
+    private static final String HI_MSG = "Hi";
+    private static final String BYE_MSG = "Bye";
+    private static final String DEFAULT_TEXT = "";
+    private static final int ROWS = 500;
+    private static final int COLS = 400;
     private final DatagramSocket readSocket;
     private final DatagramSocket writeNewsSocket;
     private final InetAddress myAddress;
@@ -33,18 +35,22 @@ public class Server extends JFrame implements Runnable{
     private final JButton stopBtn;
     private final JButton continueBtn;
     private final JTextArea newsArea;
-    private final ExecutorService executorService;
     private boolean isEnrollmentOff;
     private boolean isOpen;
-    private ServerEnrollBackground serverEnrollBackground;
+    private EnrollWorker enrollWorker;
     private final DatagramSocket writeMsgSocket;
     private final int portNum;
 
-    public Server(InetAddress myAddress, int portNum, ExecutorService executorService) throws SocketException {
+    /**
+     * Creating a new server
+     * @param myAddress The address
+     * @param portNum The port number
+     * @throws SocketException In case there's a problem opening a datagram-socket
+     */
+    public Server(InetAddress myAddress, int portNum) throws SocketException {
         super(FRAME_TITLE);
         isOpen = true;
         this.portNum = portNum;
-        this.executorService = executorService;
         readSocket = new DatagramSocket(portNum);
         writeNewsSocket = new DatagramSocket();
         writeMsgSocket = new DatagramSocket();
@@ -67,33 +73,172 @@ public class Server extends JFrame implements Runnable{
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     }
 
-    public JTextArea getNewsArea() { return newsArea; }
-    public int getPortNum() { return portNum; }
-    public JButton getContinueBtn() { return continueBtn; }
-    public JButton getSendBtn() { return sendBtn; }
-    public JButton getStopBtn() { return stopBtn; }
-    public DatagramSocket getReadSocket() { return readSocket; }
-    public SubscribersLst getSubscribersLst() { return subscribersLst; }
-    public ServerEnrollBackground getServerEnrollBackground() { return serverEnrollBackground; }
-    public DatagramSocket getWriteMsgSocket() { return writeMsgSocket; }
-    public boolean getIsOpen() { return isOpen; }
-    public boolean getIsEnrollmentOff() {
-        return isEnrollmentOff;
-    }
-    public DatagramSocket getWriteNewsSocket() { return writeNewsSocket; }
-    public InetAddress getMyAddress() { return myAddress; }
-    public ExecutorService getExecutorService() {
-        return executorService;
-    }
-    public void setIsOpen(boolean open) { isOpen = open; }
-    public void setEnrollmentOff(boolean enrollmentOff) {
-        isEnrollmentOff = enrollmentOff;
+    /**
+     * Gets the default size of a message
+     * @return The default size of a message
+     */
+    public static int getDefaultMsgSize(){
+        return DEFAULT_MSG_SIZE;
     }
 
+    /**
+     * Gets the message signaling connection request
+     * @return The message signaling connection request
+     */
+    public static String getConnectMsg(){
+        return CONNECT;
+    }
+
+    /**
+     * Gets the message signaling disconnection request
+     * @return The message
+     */
+    public static String getDisconnectMsg(){
+        return DISCONNECT;
+    }
+
+    /**
+     * Gets the message notifying the server that the enrollments are on
+     * @return The message
+     */
+    static String getEnrollmentOnMsg(){
+        return ENROLLMENT_ON_MSG;
+    }
+
+    /**
+     * gets the title to give to the enrollments message
+     * @return The title
+     */
+    static String getEnrollmentTitle(){
+        return ENROLLMENT_TITLE;
+    }
+
+    /**
+     * Gets the area where the server can write the news to distribute
+     * @return The area
+     */
+    JTextArea getNewsArea() {
+        return newsArea;
+    }
+
+    /**
+     * Gets the port number
+     * @return The port number
+     */
+    int getPortNum() {
+        return portNum;
+    }
+
+    /**
+     * Gets the continue button
+     * @return The button
+     */
+    JButton getContinueBtn() {
+        return continueBtn;
+    }
+
+    /**
+     * Gets the send button
+     * @return The button
+     */
+    JButton getSendBtn() {
+        return sendBtn;
+    }
+
+    /**
+     * Gets the stop button
+     * @return The button
+     */
+    JButton getStopBtn() {
+        return stopBtn;
+    }
+
+    /**
+     * Gets the read socket
+     * @return The socket
+     */
+    DatagramSocket getReadSocket() {
+        return readSocket;
+    }
+
+    /**
+     * Get the subscribers list
+     * @return The list
+     */
+    SubscribersLst getSubscribersLst() {
+        return subscribersLst;
+    }
+
+    /**
+     * Gets the object doing the enrollments in the background
+     * @return The enrollments handler
+     */
+    EnrollWorker getEnrollWorker() {
+        return enrollWorker;
+    }
+
+    /**
+     * Gets the write messages socket
+     * @return The socket
+     */
+    DatagramSocket getWriteMsgSocket() {
+        return writeMsgSocket;
+    }
+
+    /**
+     * Gets whether or not this server is open for connections
+     * @return True iff this server is open for connections
+     */
+    boolean getIsOpen() {
+        return isOpen;
+    }
+
+    /**
+     * Gets whether or not this server is closed for enrollments
+     * @return True iff this server is closed for enrollments
+     */
+    boolean getIsEnrollmentOff() {
+        return isEnrollmentOff;
+    }
+
+    /**
+     * Gets the write-news-socket
+     * @return The socket
+     */
+    DatagramSocket getWriteNewsSocket() {
+        return writeNewsSocket;
+    }
+
+    /**
+     * Gets this server's address
+     * @return The address
+     */
+    InetAddress getMyAddress() {
+        return myAddress;
+    }
+
+    /**
+     * Sets this server as closed
+     */
+    void setClosed() {
+        isOpen = false;
+    }
+
+    /**
+     * Sets the status of the receiving enrollments
+     * @param isEnrollmentOff The status to set
+     */
+    void setEnrollmentOff(boolean isEnrollmentOff) {
+        this.isEnrollmentOff = isEnrollmentOff;
+    }
+
+    /**
+     * Initializes this server
+     */
     public void initialize(){
         JOptionPane.showMessageDialog(this, ENROLLMENT_OFF_MSG, ENROLLMENT_TITLE,
                 JOptionPane.INFORMATION_MESSAGE);
-        serverEnrollBackground = new ServerEnrollBackground(this);
+        enrollWorker = new EnrollWorker(this);
         getSendBtn().addActionListener(new ServerSendBtnListener(this));
         getStopBtn().addActionListener(new ServerStopBtnListener(this));
         getContinueBtn().addActionListener(new ServerActivateBtnListener(this));
@@ -102,7 +247,7 @@ public class Server extends JFrame implements Runnable{
 
     public void run(){
         try {
-            getServerEnrollBackground().doInBackground();
+            getEnrollWorker().execute();
 //            enrollClients();
         } catch (Exception e) {
             e.printStackTrace();
