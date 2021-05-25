@@ -30,7 +30,6 @@ public class ActivateListener implements ActionListener {
             server.setEnrollmentOff(false);
             JOptionPane.showMessageDialog(server, Server.getEnrollmentOnMsg(),
                      Server.getEnrollmentTitle(), JOptionPane.INFORMATION_MESSAGE);
-            server.run();
         } else{
             JOptionPane.showMessageDialog(server, ACTIVE_MSG, ERR_TITLE, JOptionPane.ERROR_MESSAGE);
         }

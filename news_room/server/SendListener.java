@@ -1,5 +1,6 @@
 package news_room.server;
 
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -7,14 +8,13 @@ import java.awt.event.ActionListener;
  * A listener for sending news
  */
 public class SendListener implements ActionListener {
-    private final SendWorker sendWorker;
-
+    Server server;
     /**
      * Create a new listener
      * @param server The server associated with this listener
      */
     public SendListener(Server server){
-        sendWorker = new SendWorker(server);
+        this.server = server;
     }
 
     /**
@@ -24,7 +24,14 @@ public class SendListener implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         try {
-            sendWorker.execute();
+            new SwingWorker<Object, Object>(){
+
+                @Override
+                protected Object doInBackground() throws Exception {
+                    server.sendNews();
+                    return null;
+                }
+            }.execute();
         } catch (Exception exception) {
             exception.printStackTrace();
         }

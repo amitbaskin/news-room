@@ -33,7 +33,6 @@ public class Client extends JFrame {
     private InetAddress serverAddress;
     private boolean isGetNews;
     private final DatagramPacket receivePacket;
-    private NewsWorker newsGetterWorker;
     private final int portNum;
 
     /**
@@ -146,7 +145,6 @@ public class Client extends JFrame {
         setServerBtn.addActionListener(new SetServerListener(this));
         add(panel, BorderLayout.SOUTH);
         add(clearBtn, BorderLayout.NORTH);
-        newsGetterWorker = new NewsWorker(this);
         setVisible(true);
         setSize(COLS, ROWS);
     }
@@ -156,7 +154,13 @@ public class Client extends JFrame {
      */
     public void run() {
         try {
-            newsGetterWorker.execute();
+            new SwingWorker<Object, Object>() {
+                @Override
+                protected Object doInBackground() throws Exception {
+                    getNews();
+                    return null;
+                }
+            }.execute();
         } catch (Exception e) {
             e.printStackTrace();
         }

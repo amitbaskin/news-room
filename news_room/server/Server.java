@@ -37,7 +37,6 @@ public class Server extends JFrame {
     private final JTextArea newsArea;
     private boolean isEnrollmentOff;
     private boolean isOpen;
-    private EnrollWorker enrollWorker;
     private final DatagramSocket writeMsgSocket;
     private final int portNum;
 
@@ -170,14 +169,6 @@ public class Server extends JFrame {
     }
 
     /**
-     * Gets the object doing the enrollments in the background
-     * @return The enrollments handler
-     */
-    EnrollWorker getEnrollWorker() {
-        return enrollWorker;
-    }
-
-    /**
      * Gets the write messages socket
      * @return The socket
      */
@@ -238,7 +229,6 @@ public class Server extends JFrame {
     public void initialize(){
         JOptionPane.showMessageDialog(this, ENROLLMENT_OFF_MSG, ENROLLMENT_TITLE,
                 JOptionPane.INFORMATION_MESSAGE);
-        enrollWorker = new EnrollWorker(this);
         getSendBtn().addActionListener(new SendListener(this));
         getStopBtn().addActionListener(new StopListener(this));
         getContinueBtn().addActionListener(new ActivateListener(this));
@@ -249,7 +239,13 @@ public class Server extends JFrame {
      * Runs this server in the background
      */
     public void run(){
-        getEnrollWorker().execute();
+        new SwingWorker<Object, Object>(){
+            @Override
+            protected Object doInBackground() {
+                enrollClients();
+                return null;
+            }
+        }.execute();
     }
 
     /**
@@ -294,7 +290,10 @@ public class Server extends JFrame {
                                 receivePacket.getPort()));
                         break;
                 }
-            } catch (IOException ignore) {}
+            }
+            catch (IOException e) {
+                e.printStackTrace();
+            }
         } getReadSocket().close();
         getWriteNewsSocket().close();
         getWriteMsgSocket().close();
@@ -305,7 +304,7 @@ public class Server extends JFrame {
      * Sends the news
      * @throws IOException In case an error occurs while trying to send the news
      */
-    public void send() throws IOException {
+    public void sendNews() throws IOException {
         String news = getNewsArea().getText();
         sendToAll(news);
         getNewsArea().setText(Server.DEFAULT_TEXT);

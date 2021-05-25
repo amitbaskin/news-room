@@ -19,7 +19,6 @@ public abstract class Main {
 
     private static void run() {
         try{
-            ExecutorService executorService = Executors.newCachedThreadPool();
             runServer();
             for (int i = 0; i< CLIENTS_AMOUNT; i++){
                 runNewClient();
@@ -33,6 +32,7 @@ public abstract class Main {
             SocketException {
         Server server = new Server(InetAddress.getLocalHost(), PORT_NUM);
         server.initialize();
+        server.run();
     }
 
     private static void runNewClient() throws SocketException,
