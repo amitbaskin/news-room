@@ -239,21 +239,22 @@ public class Server extends JFrame {
         JOptionPane.showMessageDialog(this, ENROLLMENT_OFF_MSG, ENROLLMENT_TITLE,
                 JOptionPane.INFORMATION_MESSAGE);
         enrollWorker = new EnrollWorker(this);
-        getSendBtn().addActionListener(new ServerSendBtnListener(this));
-        getStopBtn().addActionListener(new ServerStopBtnListener(this));
-        getContinueBtn().addActionListener(new ServerActivateBtnListener(this));
-        addWindowListener(new ServerWindowListener(this));
+        getSendBtn().addActionListener(new SendListener(this));
+        getStopBtn().addActionListener(new StopListener(this));
+        getContinueBtn().addActionListener(new ActivateListener(this));
+        addWindowListener(new WindowListener(this));
     }
 
+    /**
+     * Runs this server in the background
+     */
     public void run(){
-        try {
-            getEnrollWorker().execute();
-//            enrollClients();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        getEnrollWorker().execute();
     }
 
+    /**
+     * Enrolls clients
+     */
     public void enrollClients(){
         while(getIsOpen()){
             try{
@@ -300,12 +301,21 @@ public class Server extends JFrame {
         dispose();
     }
 
+    /**
+     * Sends the news
+     * @throws IOException In case an error occurs while trying to send the news
+     */
     public void send() throws IOException {
         String news = getNewsArea().getText();
         sendToAll(news);
         getNewsArea().setText(Server.DEFAULT_TEXT);
     }
 
+    /**
+     * Sends a message to all subscribers
+     * @param msg The message to send
+     * @throws IOException In case an error occurs while trying to send the message
+     */
     public void sendToAll(String msg) throws IOException {
         for (Subscriber subscriber : getSubscribersLst()) {
             getReadSocket().send(new DatagramPacket(msg.getBytes(), msg.length(), subscriber.getAddress(),
@@ -313,10 +323,18 @@ public class Server extends JFrame {
         }
     }
 
+    /**
+     * Tells the background process of this server to stop
+     * @throws IOException In case there's a problem sending the message to the background process
+     */
     public void sendStop() throws IOException {
         getWriteNewsSocket().send(getStopPacket());
     }
 
+    /**
+     * Gets the packet to transmit a stop message to the background message enrolling clients for this server
+     * @return The packet
+     */
     private DatagramPacket getStopPacket(){
         int length = Server.STOP.length();
         return new DatagramPacket(Server.STOP.getBytes(), length, getMyAddress(), getPortNum());

@@ -6,14 +6,14 @@ import java.awt.event.ActionListener;
 /**
  * A listener for the unsubscribe-button
  */
-public class ClientUnsubscribeBtnListener implements ActionListener {
+public class UnsubscribeListener implements ActionListener {
     private final Client client;
 
     /**
      * Creates a new listener
      * @param client The client associated with this listener
      */
-    public ClientUnsubscribeBtnListener(Client client){
+    public UnsubscribeListener(Client client){
         this.client = client;
     }
 

@@ -33,7 +33,7 @@ public class Client extends JFrame {
     private InetAddress serverAddress;
     private boolean isGetNews;
     private final DatagramPacket receivePacket;
-    private NewsGetterWorker newsGetterWorker;
+    private NewsWorker newsGetterWorker;
     private final int portNum;
 
     /**
@@ -130,7 +130,7 @@ public class Client extends JFrame {
      */
     public void initialize(){
         getUnsubscribedMsg();
-        addWindowListener(new ClientWindowsListener(this));
+        addWindowListener(new WindowListener(this));
         JButton setServerBtn = new JButton(SET_BTN);
         JButton unsubscribeBtn = new JButton(UNSUBSCRIBE);
         JButton clearBtn = new JButton(CLEAR);
@@ -139,14 +139,14 @@ public class Client extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 getDisplayArea().setText(DEFAULT_TEXT);
             }
-        }); unsubscribeBtn.addActionListener(new ClientUnsubscribeBtnListener(this));
+        }); unsubscribeBtn.addActionListener(new UnsubscribeListener(this));
         JPanel panel = new JPanel();
         panel.add(setServerBtn, BorderLayout.EAST);
         panel.add(unsubscribeBtn, BorderLayout.WEST);
-        setServerBtn.addActionListener(new ClientSetBtnListener(this));
+        setServerBtn.addActionListener(new SetServerListener(this));
         add(panel, BorderLayout.SOUTH);
         add(clearBtn, BorderLayout.NORTH);
-        newsGetterWorker = new NewsGetterWorker(this);
+        newsGetterWorker = new NewsWorker(this);
         setVisible(true);
         setSize(COLS, ROWS);
     }

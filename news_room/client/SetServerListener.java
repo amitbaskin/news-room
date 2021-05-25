@@ -11,7 +11,7 @@ import java.net.UnknownHostException;
 /**
  * A listener button for setting a server for the client to connect to
  */
-public class ClientSetBtnListener implements ActionListener {
+public class SetServerListener implements ActionListener {
     private final static String HOST_NAME_REQUEST_MSG = "Please enter a host name:";
     private final static String DEFAULT_HOST = "127.0.0.1";
     private final static String UNKNOWN_HOST_ERR_MSG = "Unknown host!\nHost remains unchanged (default is " +
@@ -23,7 +23,7 @@ public class ClientSetBtnListener implements ActionListener {
      * Creates a new listener
      * @param Client The client associated with this listener
      */
-    public ClientSetBtnListener(Client Client){
+    public SetServerListener(Client Client){
         this.client = Client;
     }
 

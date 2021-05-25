@@ -5,12 +5,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 
-public class ServerStopBtnListener implements ActionListener {
+public class StopListener implements ActionListener {
     private static final String ACTIVE_MSG = "Clients' enrollment is not activated!";
     private static final String ERR_TITLE = "Clients' enrollment is already active!";
     private final Server server;
 
-    public ServerStopBtnListener(Server server){
+    public StopListener(Server server){
         this.server = server;
     }
 

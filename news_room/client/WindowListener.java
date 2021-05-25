@@ -6,14 +6,14 @@ import java.awt.event.WindowEvent;
 /**
  * A listener for a client's window
  */
-public class ClientWindowsListener extends WindowAdapter {
+public class WindowListener extends WindowAdapter {
     private final Client client;
 
     /**
      * Creates a new listener
      * @param client The client associated with this listener
      */
-    public ClientWindowsListener(Client client){
+    public WindowListener(Client client){
         this.client = client;
     }
 

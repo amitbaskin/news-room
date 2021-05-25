@@ -2,12 +2,11 @@ package news_room.server;
 
 import javax.swing.*;
 
+/**
+ * Enrolls clients in the background
+ */
 public class EnrollWorker extends SwingWorker<Object, Object> {
     private final Server server;
-
-    public Server getServer() {
-        return server;
-    }
 
     public EnrollWorker(Server server){
         this.server = server;
@@ -15,7 +14,7 @@ public class EnrollWorker extends SwingWorker<Object, Object> {
 
     @Override
     protected Object doInBackground() {
-        getServer().enrollClients();
+        server.enrollClients();
         return null;
     }
 }

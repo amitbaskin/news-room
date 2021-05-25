@@ -3,10 +3,10 @@ package news_room.server;
 import javax.swing.*;
 import java.io.IOException;
 
-public class ServerSenderBackground extends SwingWorker<Object, Object> {
+public class SendWorker extends SwingWorker<Object, Object> {
     private final Server server;
 
-    public ServerSenderBackground(Server server){
+    public SendWorker(Server server){
         this.server = server;
     }
 
