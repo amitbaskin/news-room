@@ -102,8 +102,8 @@ public class Server extends JFrame implements Runnable{
 
     public void run(){
         try {
-//            getServerEnrollBackground().doInBackground();
-            enrollClients();
+            getServerEnrollBackground().doInBackground();
+//            enrollClients();
         } catch (Exception e) {
             e.printStackTrace();
         }

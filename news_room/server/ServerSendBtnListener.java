@@ -4,7 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class ServerSendBtnListener implements ActionListener {
-    private Server server;
+//    private Server server;
     private final ServerSenderBackground serverSenderBackground;
 
     public ServerSenderBackground getServerSenderBackground() {
@@ -12,15 +12,15 @@ public class ServerSendBtnListener implements ActionListener {
     }
 
     public ServerSendBtnListener(Server server){
-        this.server = server;
+//        this.server = server;
         serverSenderBackground = new ServerSenderBackground(server);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         try {
-//            getServerSenderBackground().doInBackground();
-            server.send();
+            getServerSenderBackground().doInBackground();
+//            server.send();
         } catch (Exception exception) {
             exception.printStackTrace();
         }
