@@ -16,9 +16,7 @@ public class ServerSenderBackground extends SwingWorker<Object, Object> {
 
     @Override
     protected Object doInBackground() throws IOException {
-        String news = getServer().getNewsArea().getText();
-        getServer().sendToAll(news);
-        getServer().getNewsArea().setText(Server.DEFAULT_TEXT);
+        getServer().send();
         return null;
     }
 }

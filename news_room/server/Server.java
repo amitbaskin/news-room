@@ -102,7 +102,8 @@ public class Server extends JFrame implements Runnable{
 
     public void run(){
         try {
-            getServerEnrollBackground().doInBackground();
+//            getServerEnrollBackground().doInBackground();
+            enrollClients();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -152,6 +153,12 @@ public class Server extends JFrame implements Runnable{
         getWriteNewsSocket().close();
         getWriteMsgSocket().close();
         dispose();
+    }
+
+    public void send() throws IOException {
+        String news = getNewsArea().getText();
+        sendToAll(news);
+        getNewsArea().setText(Server.DEFAULT_TEXT);
     }
 
     public void sendToAll(String msg) throws IOException {
