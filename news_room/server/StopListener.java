@@ -5,6 +5,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 
+/**
+ * Listener for the stop button
+ */
 public class StopListener implements ActionListener {
     private static final String ACTIVE_MSG = "Clients' enrollment is not activated!";
     private static final String ERR_TITLE = "Clients' enrollment is already active!";
