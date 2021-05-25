@@ -12,6 +12,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.ExecutorService;
 
+/**
+ * Client end class
+ */
 public class Client extends JFrame implements Runnable {
     private static final String FRAME_TITLE = "Client";
     private static final String SET_BTN = "Set Server";
@@ -22,7 +25,7 @@ public class Client extends JFrame implements Runnable {
     private static final String NOT_SUBSCRIBED_MSG = "You are currently not subscribed!";
     private static final String FROM_MSG = "\nFrom: %s\n";
     private static final String TIME_PATTERN = "yyyy-MM-dd HH:mm:ss";
-    public static final String NEWS_PADDING = "\n\n\n";
+    private static final String NEWS_PADDING = "\n\n\n";
     private static final int ROWS = 300;
     private static final int COLS = 400;
     private final DatagramSocket socket;
@@ -34,6 +37,12 @@ public class Client extends JFrame implements Runnable {
     private final DatagramPacket receivePacket;
     private final int portNum;
 
+    /**
+     * Create new client
+     * @param portNum The port number to connect to
+     * @param executorService The executor service to process this client's connection in the background
+     * @throws SocketException
+     */
     public Client(int portNum, ExecutorService executorService) throws SocketException {
         super(FRAME_TITLE);
         this.portNum = portNum;
@@ -97,7 +106,8 @@ public class Client extends JFrame implements Runnable {
     @Override
     public void run() {
         try {
-            new ClientWorker(this).doInBackground();
+//            new ClientWorker(this).doInBackground();
+            getNews();
         } catch (Exception e) {
             e.printStackTrace();
         }
