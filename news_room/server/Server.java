@@ -315,10 +315,19 @@ public class Server extends JFrame {
      * @param msg The message to send
      * @throws IOException In case an error occurs while trying to send the message
      */
-    public void sendToAll(String msg) throws IOException {
-        for (Subscriber subscriber : getSubscribersLst()) {
-            getReadSocket().send(new DatagramPacket(msg.getBytes(), msg.length(), subscriber.getAddress(),
-                     subscriber.getPort()));
+    public void sendToAll(final String msg) throws IOException {
+        for (final Subscriber subscriber : getSubscribersLst()) {
+            new Thread(){
+                @Override
+                public void run(){
+                    try {
+                        getReadSocket().send(new DatagramPacket(msg.getBytes(), msg.length(),
+                                 subscriber.getAddress(), subscriber.getPort()));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }.start();
         }
     }
 
